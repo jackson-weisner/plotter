@@ -18,6 +18,7 @@ void blink() {
     }
 }
 
+// function to init a stepper motor struct
 stepper* stepper_init(volatile uint8_t* reg, volatile uint8_t* port, int pulsePin, int directionPin) {
     stepper* newStepper = (stepper*)malloc(sizeof(stepper));
     newStepper->port = port;
@@ -28,6 +29,7 @@ stepper* stepper_init(volatile uint8_t* reg, volatile uint8_t* port, int pulsePi
     return newStepper;
 }
 
+// this sets the bit mask for 
 void stepper_setDirectionMask(stepper* s, direction d) {
     uint8_t bit = d;
     if (d == LEFT || d == RIGHT) {
@@ -36,19 +38,24 @@ void stepper_setDirectionMask(stepper* s, direction d) {
     s->dMask = 0x00 | (bit << s->directionPin);
 }
 
+// function to reset the port and set the direction masks for the motors
 void stepper_initMove(stepper* s, direction d) {
     *s->port = 0x00;
     stepper_setDirectionMask(s, d);
 }
 
+// function to turn the stepper motor on in the specified direction
 void stepper_on(stepper* s) {
     *s->port |= (1 << s->pulsePin) | (s->dMask);
 }
 
+// turns the motor off
 void stepper_off(stepper* s) {
     *s->port &= (0 << s->pulsePin) | (s->dMask);
 }
 
+// function to move both x and y stepper motors in their respective directions
+// they can move at the same time (diagonal movements) or separately 
 void stepper_move(stepper* x, direction xd, stepper* y, direction yd) {
     stepper_initMove(x, xd);
     stepper_initMove(y, yd);

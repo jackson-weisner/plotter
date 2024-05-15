@@ -4,6 +4,8 @@
 extern stepper* x;
 extern stepper* y;
 
+// map of motor instructions that correspond to ASCII characters
+// this is an easy way to draw characters 
 instruction charMap[CHAR_MAP_ROWS][MAX_INSTRUCTION_LEN] = {
     {HEADDOWN, UP, UP, RIGHT, RIGHT, DOWN, DOWN, HEADUP, UP, HEADDOWN, LEFT, LEFT, HEADUP, END}, //     A
     {HEADDOWN},
@@ -11,10 +13,13 @@ instruction charMap[CHAR_MAP_ROWS][MAX_INSTRUCTION_LEN] = {
     {HEADDOWN, UPRIGHT, UPLEFT, DOWN, DOWN, HEADUP, END},
 };
 
+// hash function to get the index in the charMap for the character specified
 int instruction_charHash(char c) {
     return c - (int)('A');
 }
 
+// function to execute the write instruction
+// takes a string 
 void instruction_write(char* letters) {
     // TODO: preprocess
     // copy?
@@ -24,6 +29,7 @@ void instruction_write(char* letters) {
     }
 }
 
+// function to dispatch movements to the motors
 void instruction_dispatch(movement m) {
     #define STEPPER_MOVE(a, b) stepper_move(x, a, y, b); break;
     switch(m) {
@@ -38,6 +44,8 @@ void instruction_dispatch(movement m) {
     }
 }
 
+// executes a list of instructions
+// sends them to the dispatch method to be run on their respective motors
 void instruction_execute(instruction* instructions) {
     for (int i = 0; instructions[i] != END; i++) {
         _delay_ms(BETWEEN_MOVE_DELAY);
