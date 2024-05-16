@@ -6,6 +6,7 @@
 
 extern stepper* x;
 extern stepper* y;
+extern uint8_t sizeMult;
 
 void blink() {
     DDRB = 0xff; 
@@ -59,7 +60,7 @@ void stepper_off(stepper* s) {
 void stepper_move(stepper* x, direction xd, stepper* y, direction yd) {
     stepper_initMove(x, xd);
     stepper_initMove(y, yd);
-	for (int i = 0; i < DISTANCE; i++) {
+	for (int i = 0; i < (int)(DISTANCE*sizeMult); i++) {
         TOGGLE(x, on);
         TOGGLE(y, on);
         _delay_ms(DELAY);

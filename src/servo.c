@@ -1,4 +1,5 @@
 #include "../include/servo.h"
+#include <stdlib.h>
 
 servo* servo_init(volatile uint8_t* port, uint8_t pin) {
     servo* newServo = (servo*)malloc(sizeof(servo));
