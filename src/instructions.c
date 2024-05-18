@@ -51,9 +51,10 @@ int instruction_charHash(char c) {
 }
 
 // executes a list of instructions
-// sends them to the dispatch method to be run on their respective motors
+// determines what motor movements are required for each movement
 void instruction_executeList(instruction* instructions) {
     #define STEPPER_MOVE(a, b) stepper_move(x, a, y, b); break;
+    bool halfBool = FALSE;
     for (int i = 0; instructions[i] != END; i++) {
         _delay_ms(BETWEEN_MOVE_DELAY);
         switch(instructions[i]) {
@@ -65,6 +66,14 @@ void instruction_executeList(instruction* instructions) {
             case DOWNRIGHT: STEPPER_MOVE(RIGHT, DOWN);
             case DOWNLEFT:  STEPPER_MOVE(LEFT, DOWN);
             case UPLEFT:    STEPPER_MOVE(LEFT, UP);
+            case HALF:      
+                sizeMult /= 2; 
+                halfBool = TRUE;
+                continue;
+        }
+        if (halfBool == TRUE) {
+            halfBool = FALSE;
+            sizeMult *= 2;
         }
     }
 }

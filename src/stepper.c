@@ -55,6 +55,8 @@ void stepper_off(stepper* s) {
     *s->port &= (0 << s->pulsePin) | (s->dMask);
 }
 
+// void stepper_move()
+
 // function to move both x and y stepper motors in their respective directions
 // they can move at the same time (diagonal movements) or separately 
 void stepper_move(stepper* x, direction xd, stepper* y, direction yd) {

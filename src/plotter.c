@@ -31,18 +31,13 @@ void test_servo(int x) {
     DDRB = 0x00 | (1 << DDB1) | (1 << DDB2);
     TCCR1A |= (1 << COM1A1) | (1 << WGM11) | (1 << WGM12) | (1 << WGM13);
 	TCCR1B |= (1 << CS12);
-    ICR1 = (unsigned int)F_CPU / 50;  
+    ICR1 = (unsigned long)F_CPU / 50;  
     OCR1A = ICR1 - x;
 }
 
 int main() {
     // setup();
-    for(;;) {
-	    test_servo(3000);
-        _delay_ms(2000);
-	    test_servo(3999);
-        _delay_ms(2000);
-    }
+    test_servo(3999);
     // teardown();
     return 0;
 }

@@ -2,6 +2,8 @@
 
 #ifndef INSTRUCTION_DEFINITIONS
 #define INSTRUCTION_DEFINITIONS
+#define TRUE 1
+#define FALSE 0
 #define MAX_INSTRUCTION_NAME_LEN 15
 #define CHAR_MAP_ROWS 28
 #define MAX_INSTRUCTION_LEN 20
@@ -10,7 +12,7 @@
 
 #define LENGTH 1000
 #define BETWEEN_MOVE_DELAY 15000
-typedef enum movement {DOWN, UP, UPRIGHT, RIGHT, DOWNRIGHT, DOWNLEFT, LEFT, UPLEFT, HEADDOWN, HEADUP, NONE, END} movement;
+typedef enum movement {DOWN, UP, UPRIGHT, RIGHT, DOWNRIGHT, DOWNLEFT, LEFT, UPLEFT, HEADDOWN, HEADUP, HALF, NONE, END} movement;
 typedef movement direction;
 typedef uint8_t instruction;
 typedef instruction* instructionList;
@@ -18,6 +20,8 @@ typedef struct instructionFunctions {
     char name[MAX_INSTRUCTION_NAME_LEN];
     void (*f)(char*);
 } instructionFunctions;
+
+typedef uint8_t bool;
 
 #endif
 

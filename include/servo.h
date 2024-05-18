@@ -3,6 +3,9 @@
 #ifndef SERVO_DEFINITIONS
 #define SERVO_DEFINITIONS
 
+#define SERVO_DOWN 3999
+#define SERVO_UP 2000
+
 typedef struct servo {
     volatile uint8_t* port;
     uint8_t pin;
