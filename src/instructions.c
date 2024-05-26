@@ -54,7 +54,7 @@ int instruction_charHash(char c) {
 // determines what motor movements are required for each movement
 void instruction_executeList(instruction* instructions) {
     #define STEPPER_MOVE(a, b) stepper_move(x, a, y, b); break;
-    bool halfBool = FALSE;
+    uint8_t halfBool = 0;
     for (int i = 0; instructions[i] != END; i++) {
         _delay_ms(BETWEEN_MOVE_DELAY);
         switch(instructions[i]) {
@@ -68,12 +68,12 @@ void instruction_executeList(instruction* instructions) {
             case UPLEFT:    STEPPER_MOVE(LEFT, UP);
             case HALF:      
                 sizeMult /= 2; 
-                halfBool = TRUE;
+                halfBool++;
                 continue;
         }
-        if (halfBool == TRUE) {
-            halfBool = FALSE;
+        while (halfBool > 0) {
             sizeMult *= 2;
+            halfBool--;
         }
     }
 }

@@ -13,9 +13,9 @@ void blink() {
     int delay = 10000;
     for (;;) {
         PORTB = (1 << PINB5);
-        _delay_ms(delay);
+        _delay_ms(1000);
         PORTB = (0 << PINB5);
-        _delay_ms(delay);
+        _delay_ms(1000);
     }
 }
 

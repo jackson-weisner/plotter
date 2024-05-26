@@ -2,13 +2,13 @@
 #include "../include/stepper.h"
 #include "../include/instructions.h"
 #include "../include/servo.h"
+#include "../include/button.h"
 #include <util/delay.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 stepper* x;
 stepper* y;
-servo* s;
 
 // function to init all motors and clear ports
 void setup() {
@@ -16,7 +16,13 @@ void setup() {
     x = stepper_init(&DDRD, &PORTD, PIND5, PIND6);
     y = stepper_init(&DDRD, &PORTD, PIND2, PIND4);
     DDRB = 0x00;
-    s = servo_init(&DDRB, PINB1);
+    servo_init(&DDRB, PINB1);
+
+    // don't return until button is pressed
+    button* waitButton = button_init(&DDRB, &PINB, PINB4);
+    button_wait(waitButton);
+    free(waitButton);
+
     // move to starting location
 }
 
@@ -24,20 +30,11 @@ void setup() {
 void teardown() {
     free(x);
     free(y);
-    free(s);
-}
-
-void test_servo(int x) {
-    DDRB = 0x00 | (1 << DDB1) | (1 << DDB2);
-    TCCR1A |= (1 << COM1A1) | (1 << WGM11) | (1 << WGM12) | (1 << WGM13);
-	TCCR1B |= (1 << CS12);
-    ICR1 = (unsigned long)F_CPU / 50;  
-    OCR1A = ICR1 - x;
 }
 
 int main() {
-    // setup();
-    test_servo(3999);
-    // teardown();
+    setup();
+    blink();
+    teardown();
     return 0;
 }
