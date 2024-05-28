@@ -10,11 +10,11 @@ float sizeMult = 1.0;
 // map of motor instructions that correspond to ASCII characters
 // this is an easy way to draw characters 
 instruction charMap[CHAR_MAP_ROWS][MAX_INSTRUCTION_LEN] = {
-    {HEADUP}, // space
-    {HEADDOWN, UP, UP, RIGHT, RIGHT, DOWN, DOWN, HEADUP, UP, HEADDOWN, LEFT, LEFT, HEADUP, END}, //     A
+    {HEADDOWN, UP, UP, RIGHT, DOWN, DOWN, HEADUP, UP, HEADDOWN, LEFT, HEADUP, END}, //     A
     {HEADDOWN},
     {HEADUP, RIGHT, HEADDOWN, LEFT, UP, UP, RIGHT, HEADUP, END}, // C
     {HEADDOWN, UPRIGHT, UPLEFT, DOWN, DOWN, HEADUP, END},
+    {HEADUP}, // space
 };
 
 const instructionFunctions instructionFunctionList[INSTRUCTION_FUNCTION_COUNT] = {

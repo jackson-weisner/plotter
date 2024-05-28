@@ -60,13 +60,12 @@ void stepper_off(stepper* s) {
 void stepper_move(stepper* x, direction xd, stepper* y, direction yd) {
     stepper_initMove(x, xd);
     stepper_initMove(y, yd);
-    // blink();
-	for (int i = 0; i < (int)(DISTANCE*sizeMult); i++) {
+	for (int i = 0; i < DISTANCE; i++) {
         TOGGLE(x, on);
         TOGGLE(y, on);
-        _delay_ms(DELAY);
+        _delay_ms(STEPPER_DELAY);
         TOGGLE(x, off);
         TOGGLE(y, off);
-        _delay_ms(DELAY);
+        _delay_ms(STEPPER_DELAY);
 	}
 }

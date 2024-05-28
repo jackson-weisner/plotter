@@ -36,10 +36,9 @@ int main() {
     setup();
     // blink();
     // instruction list[3] = {UP, UP, END};
-    // instruction_executeList();
-    stepper_move(x,LEFT,y,NONE);
-    // stepper_move()
-    // instruction_write("\"ABC\"");
+    // instruction_executeList(list);
+    // instruction_write("\"C\"");
+    instruction_parseLine("write \"A\"");
     teardown();
     return 0;
 }

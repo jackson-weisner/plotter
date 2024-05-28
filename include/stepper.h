@@ -5,9 +5,8 @@
 #define STEPPER_DEFINITIONS
 
 #define F_CPU 16000000UL
-// #define F_CPU 1000000UL
 #define MOVEMENT_COUNT 12
-#define DELAY 15
+#define STEPPER_DELAY 15
 #define DISTANCE (15000 / (DELAY * 2))
 #define TOGGLE(s, mode) if (s ## d != NONE) stepper_ ## mode(s)
 typedef enum power {OFF, ON} power; 
