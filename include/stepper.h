@@ -5,6 +5,7 @@
 #define STEPPER_DEFINITIONS
 
 #define F_CPU 16000000UL
+// #define F_CPU 1000000UL
 #define MOVEMENT_COUNT 12
 #define DELAY 15
 #define DISTANCE (15000 / (DELAY * 2))

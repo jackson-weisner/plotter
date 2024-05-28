@@ -15,13 +15,13 @@ void setup() {
     DDRD = 0x00;
     x = stepper_init(&DDRD, &PORTD, PIND5, PIND6);
     y = stepper_init(&DDRD, &PORTD, PIND2, PIND4);
-    DDRB = 0x00;
-    servo_init(&DDRB, PINB1);
+    // DDRB = 0x00;
+    // servo_init(&DDRB, PINB1);
 
     // don't return until button is pressed
-    button* waitButton = button_init(&DDRB, &PINB, PINB4);
-    button_wait(waitButton);
-    free(waitButton);
+    // button* waitButton = button_init(&DDRB, &PINB, PINB4);
+    // button_wait(waitButton);
+    // free(waitButton);
 
     // move to starting location
 }
@@ -34,7 +34,12 @@ void teardown() {
 
 int main() {
     setup();
-    blink();
+    // blink();
+    // instruction list[3] = {UP, UP, END};
+    // instruction_executeList();
+    stepper_move(x,LEFT,y,NONE);
+    // stepper_move()
+    // instruction_write("\"ABC\"");
     teardown();
     return 0;
 }

@@ -66,6 +66,8 @@ void instruction_executeList(instruction* instructions) {
             case DOWNRIGHT: STEPPER_MOVE(RIGHT, DOWN);
             case DOWNLEFT:  STEPPER_MOVE(LEFT, DOWN);
             case UPLEFT:    STEPPER_MOVE(LEFT, UP);
+            case HEADDOWN:  break;
+            case HEADUP:    break;
             case HALF:      
                 sizeMult /= 2; 
                 halfBool++;

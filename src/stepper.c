@@ -34,7 +34,7 @@ stepper* stepper_init(volatile uint8_t* reg, volatile uint8_t* port, int pulsePi
 void stepper_setDirectionMask(stepper* s, direction d) {
     uint8_t bit = d;
     if (d == LEFT || d == RIGHT) {
-        bit = (d == LEFT) ? DOWN : UP;
+        bit = (d == LEFT) ? UP : DOWN;
     }
     s->dMask = 0x00 | (bit << s->directionPin);
 }
@@ -55,13 +55,12 @@ void stepper_off(stepper* s) {
     *s->port &= (0 << s->pulsePin) | (s->dMask);
 }
 
-// void stepper_move()
-
 // function to move both x and y stepper motors in their respective directions
 // they can move at the same time (diagonal movements) or separately 
 void stepper_move(stepper* x, direction xd, stepper* y, direction yd) {
     stepper_initMove(x, xd);
     stepper_initMove(y, yd);
+    // blink();
 	for (int i = 0; i < (int)(DISTANCE*sizeMult); i++) {
         TOGGLE(x, on);
         TOGGLE(y, on);
