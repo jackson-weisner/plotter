@@ -6,7 +6,7 @@
 #define MAX_INSTRUCTION_NAME_LEN 15
 #define CHAR_MAP_ROWS 28
 #define MAX_INSTRUCTION_LEN 23
-#define INSTRUCTION_FUNCTION_COUNT 3
+#define INSTRUCTION_FUNCTION_COUNT 4
 #define EQUAL_STR(x, y) (strcmp(x, y) == 0)
 #define SIZE_ARRAY_SIZE 4
 
@@ -26,6 +26,7 @@ typedef struct instructionFunctions {
 instruction* instruction_getList(char c);
 void instruction_write(char* letters);
 void instruction_square(char* dimensions);
+void instruction_cube(char* dimensions);
 void instruction_size(char* size);
 
 void instruction_executeList(instruction* instructions);

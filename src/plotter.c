@@ -21,9 +21,9 @@ void setup() {
     solenoid_init(&DDRB, &PORTB, PINB0); 
 
     // don't start until button is pressed
-    // button* waitButton = button_init(&DDRB, &PINB, PINB5);
-    // button_wait(waitButton);
-    // free(waitButton);
+    button* waitButton = button_init(&DDRB, &PINB, PINB5);
+    button_wait(waitButton);
+    free(waitButton);
 
     // move to starting location
 }
@@ -43,19 +43,23 @@ void teardown() {
 int main() {
     setup();
 
-    // solenoid_on();
     // for (;;) {
+    // solenoid_on();
     // _delay_ms(1000);
     // solenoid_off();
     // _delay_ms(1000);
-// 
     // }
+    // stepper_move(x, LEFT, y, NONE);
     // stepper_move(x, LEFT, y, NONE);
     // stepper_move(x, NONE, y, DOWN);
     // stepper_move(x, NONE, y, DOWN);
     // stepper_move(x, NONE, y, DOWN);
 
-    instruction_parseLine("write \"A\"");
+    // instruction_parseLine("write \"ONO\"");
+    solenoid_on();
+    instruction l[3] = {UP, DOWNRIGHT, END};
+    instruction_executeList(l);
+    solenoid_off();
 
     teardown();
     return 0;
