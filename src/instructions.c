@@ -1,21 +1,47 @@
 #include "../include/stepper.h"
+#include "../include/solenoid.h"
+#include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
 #include <string.h>
 
 extern stepper* x;
 extern stepper* y;
+extern uint8_t xPos;
 float sizeMult = 1.0;
 
 // map of motor instructions that correspond to ASCII characters
 // this is an easy way to draw characters 
 instruction charMap[CHAR_MAP_ROWS][MAX_INSTRUCTION_LEN] = {
-    {HEADDOWN, UP, UP, RIGHT, DOWN, DOWN, HEADUP, UP, HEADDOWN, LEFT, HEADUP, END}, //     A
-    {HEADDOWN},
-    {HEADUP, RIGHT, HEADDOWN, LEFT, UP, UP, RIGHT, HEADUP, END}, // C
-    {HEADDOWN, UPRIGHT, UPLEFT, DOWN, DOWN, HEADUP, END},
-    {HEADUP}, // space
+    {HEADDOWN, UP, UP, RIGHT, DOWN, DOWN, HEADUP, UP, HEADDOWN, LEFT, HEADUP, DOWN, END}, // A
+    {HEADDOWN, UP, UP, RIGHT, DOWN, DOWN, LEFT, HEADUP, UP, HEADDOWN, RIGHT, HEADUP, LEFT, DOWN, HEADUP, END}, // B
+    {HEADUP, RIGHT, HEADDOWN, LEFT, UP, UP, RIGHT, HEADUP, DOWNLEFT, DOWN, END}, // C
+    {HEADDOWN, UP, UP, DOWNRIGHT, DOWNLEFT, HEADUP, END}, // D
+    {HEADUP, RIGHT, HEADDOWN, LEFT, UP, UP, RIGHT, HEADUP, DOWN, HEADDOWN, LEFT, HEADUP, DOWN, END}, // E
+    {HEADDOWN, UP, UP, RIGHT, HEADUP, DOWN, HEADDOWN, LEFT, HEADUP, DOWN, END}, // F
+    {HEADDOWN, UP, UP, RIGHT, HEADUP, DOWNLEFT, HALF, RIGHT, HEADDOWN, HALF, RIGHT, DOWN, LEFT, HEADUP, END}, // G
+    {HEADDOWN, UP, UP, HEADUP, RIGHT, HEADDOWN, DOWN, DOWN, HEADUP, UP, HEADDOWN, LEFT, HEADUP, DOWN, END}, // H
+    {HEADDOWN, HALF, RIGHT, UP, UP, HEADUP, HALF, LEFT, HEADDOWN, RIGHT, HEADUP, DOWN, DOWN, HEADDOWN, HALF, LEFT, HEADUP, END}, // I
+    {HEADDOWN, }, // J
+    {HEADUP, RIGHT, HEADDOWN, UPLEFT, UPRIGHT, HEADUP, LEFT, HEADDOWN, DOWN, DOWN, HEADUP, END}, // K
+    {HEADUP, RIGHT, HEADDOWN, LEFT, UP, UP, HEADUP, DOWN, DOWN, END}, // L
+    {HEADDOWN, UP, UP, HALF, DOWNRIGHT, HALF, UPRIGHT, DOWN, DOWN, HEADUP, LEFT, END}, // M
+    {HEADDOWN, }, // N
+    {HEADDOWN, UP, UP, RIGHT, DOWN, DOWN, LEFT, HEADUP, END}, // O
+    {HEADDOWN, UP, RIGHT, UP, LEFT, DOWN, HEADUP, DOWN, END}, // P
+    {HEADDOWN, }, // Q
+    {HEADDOWN, UP, RIGHT, UP, LEFT, DOWN, DOWNRIGHT, HEADUP, LEFT, END}, // R
+    {HEADDOWN, RIGHT, UP, LEFT, UP, RIGHT, HEADUP, DOWNLEFT, DOWN, END}, // S
+    {HEADUP, HALF, RIGHT, HEADDOWN, UP, UP, HEADUP, HALF, LEFT, HEADDOWN, RIGHT, HEADUP, DOWN, DOWN, HEADDOWN, HALF, LEFT, HEADUP, END}, // T
+    {HEADDOWN, RIGHT, UP, UP, HEADUP, LEFT, HEADDOWN, DOWN, DOWN, HEADUP, END}, // U
+    {HEADUP, HALF, RIGHT, HEADDOWN, HALF, UPRIGHT, HALF, UP, UP, HEADUP, LEFT, HEADDOWN, DOWN, HALF, DOWN, HALF, DOWNRIGHT, HEADUP, HALF, RIGHT, END}, // V
+    {HEADDOWN, HALF, UPRIGHT, HALF, DOWNRIGHT, UP, UP, HEADUP, LEFT, HEADDOWN, DOWN, DOWN, HEADUP, END}, // W
+    {HEADDOWN, }, // X
+    {HEADDOWN, }, // Y
+    {HEADDOWN, } // Z
 };
+instruction nextChar[6] = {HEADUP, RIGHT, HALF, RIGHT, END};
+instruction space[4] = {HEADUP, HALF, RIGHT, END};
 
 const instructionFunctions instructionFunctionList[INSTRUCTION_FUNCTION_COUNT] = {
     {"write", instruction_write},
@@ -28,33 +54,41 @@ const instructionFunctions instructionFunctionList[INSTRUCTION_FUNCTION_COUNT] =
 void instruction_write(char* letters) {
     letters++;
     while(*letters != '\"') {
-        instruction_executeList(charMap[instruction_charHash(*letters)]);
+        instruction_executeList(instruction_getList(*letters));
+        // if (*letters != ' ') {
+            instruction_executeList(nextChar); // shifts to the next starting location
+        // }
+        xPos++;
         letters++;
     }
+    xPos++;
 }
 
 void instruction_square(char* dimensions) {}
 
+// this instruction takes a char* that is 0-3
+// this maps to a index into a size array and this size multiplier gets set to that value
 void instruction_size(char* size) {
-    if (EQUAL_STR(size, "large"))     sizeMult = 1.6; return; 
-    if (EQUAL_STR(size, "medium"))    sizeMult = 1.2; return;
-    if (EQUAL_STR(size, "small"))     sizeMult = 0.7; return;
-    sizeMult = 1.0;
+    static const int sizeArray[4] = {0.7, 1.0, 1.2, 1.6};
+    int index;
+    sscanf(size, "%d", &index);
+    if (index < 0 || index > 3) return;
+    sizeMult = sizeArray[index];
 }
 
 // void instruction_swag() {}
 
-// hash function to get the index in the charMap for the character specified
-int instruction_charHash(char c) {
-    if (c == ' ') return 0;
-    return c - (int)('A');
+// returns the instruction list for the character passed in
+instruction* instruction_getList(char c) {
+    if (c == ' ') return space;
+    return charMap[c - (int)('A')];
 }
 
 // executes a list of instructions
 // determines what motor movements are required for each movement
 void instruction_executeList(instruction* instructions) {
     #define STEPPER_MOVE(a, b) stepper_move(x, a, y, b); break;
-    uint8_t halfBool = 0;
+    uint8_t halfCount = 0;
     for (int i = 0; instructions[i] != END; i++) {
         _delay_ms(BETWEEN_MOVE_DELAY);
         switch(instructions[i]) {
@@ -66,16 +100,16 @@ void instruction_executeList(instruction* instructions) {
             case DOWNRIGHT: STEPPER_MOVE(RIGHT, DOWN);
             case DOWNLEFT:  STEPPER_MOVE(LEFT, DOWN);
             case UPLEFT:    STEPPER_MOVE(LEFT, UP);
-            case HEADDOWN:  break;
-            case HEADUP:    break;
+            case HEADDOWN:  solenoid_on();  break;
+            case HEADUP:    solenoid_off(); break;
             case HALF:      
-                sizeMult /= 2; 
-                halfBool++;
+                sizeMult /= 2.0; 
+                halfCount++;
                 continue;
         }
-        while (halfBool > 0) {
-            sizeMult *= 2;
-            halfBool--;
+        while (halfCount > 0) {
+            sizeMult *= 2.0;
+            halfCount--;
         }
     }
 }

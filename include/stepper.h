@@ -1,13 +1,16 @@
 #include <stdint.h>
 #include "../include/instructions.h"
 
+#ifndef CPU_FREQ
+#define CPU_FREQ
+#define F_CPU 1000000UL
+#endif
+
 #ifndef STEPPER_DEFINITIONS
 #define STEPPER_DEFINITIONS
-
-#define F_CPU 16000000UL
 #define MOVEMENT_COUNT 12
-#define STEPPER_DELAY 15
-#define DISTANCE (15000 / (DELAY * 2))
+#define STEPPER_DELAY 10
+#define DISTANCE (10000 / (STEPPER_DELAY * 2))
 #define TOGGLE(s, mode) if (s ## d != NONE) stepper_ ## mode(s)
 typedef enum power {OFF, ON} power; 
 typedef struct stepper {

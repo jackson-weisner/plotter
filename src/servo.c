@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <avr/io.h>
 
+const uint8_t period = 20;
+
 void servo_init(volatile uint8_t* reg, uint8_t pin) {
     *reg = 0x00 | (1 << pin);
     TCCR1A |= (1 << COM1A1) | (1 << WGM11);                 // set up for fast PWM with TCR1 as TOP
@@ -13,5 +15,5 @@ void servo_init(volatile uint8_t* reg, uint8_t pin) {
 
 void servo_move(float dutyCycleTime) {
     // set OCR1A to a percentage of the ICR1 value
-    OCR1A = (dutyCycleTime/20)*ICR1;
+    OCR1A = (dutyCycleTime/period)*ICR1;
 }
