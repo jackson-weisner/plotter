@@ -10,7 +10,6 @@
 
 stepper* x;
 stepper* y;
-uint8_t xPos = 0;
 
 // function to init all motors and clear ports
 void setup() {
@@ -31,11 +30,7 @@ void setup() {
 // frees memory
 void teardown() {
     // reset the x position
-    _delay_ms(2000);
-    while (xPos > 0) {
-        stepper_move(x, LEFT, y, NONE);
-        xPos--;
-    }
+    instruction_resetX();
     free(x);
     free(y);
 }
@@ -43,23 +38,12 @@ void teardown() {
 int main() {
     setup();
 
-    // for (;;) {
-    // solenoid_on();
-    // _delay_ms(1000);
-    // solenoid_off();
-    // _delay_ms(1000);
+    // for (int i = 0; i < 4; ++i) {
+        // instruction_executeMovement(T_LEFT);
     // }
-    // stepper_move(x, LEFT, y, NONE);
-    // stepper_move(x, LEFT, y, NONE);
-    // stepper_move(x, NONE, y, DOWN);
-    // stepper_move(x, NONE, y, DOWN);
-    // stepper_move(x, NONE, y, DOWN);
 
-    // instruction_parseLine("write \"ONO\"");
-    solenoid_on();
-    instruction l[3] = {UP, DOWNRIGHT, END};
-    instruction_executeList(l);
-    solenoid_off();
+    // instruction_parseLine("size 0");
+    instruction_parseLine("cube");
 
     teardown();
     return 0;

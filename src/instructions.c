@@ -7,41 +7,42 @@
 
 extern stepper* x;
 extern stepper* y;
-extern uint8_t xPos;
+uint8_t xPos = 0;
 float sizeMult = 1.0;
 
 // map of motor instructions that correspond to ASCII characters
 // this is an easy way to draw characters 
 instruction charMap[CHAR_MAP_ROWS][MAX_INSTRUCTION_LEN] = {
-    {HEADDOWN, UP, UP, RIGHT, DOWN, DOWN, HEADUP, UP, HEADDOWN, LEFT, HEADUP, DOWNRIGHT, END}, // A
-    {HEADDOWN, UP, UP, RIGHT, DOWN, DOWN, LEFT, HEADUP, UP, HEADDOWN, RIGHT, HEADUP, DOWN, END}, // B
-    {HEADUP, RIGHT, HEADDOWN, LEFT, UP, UP, RIGHT, HEADUP, DOWN, DOWN, END}, // C
-    {HEADDOWN, UP, UP, DOWNRIGHT, DOWNLEFT, HEADUP, RIGHT, END}, // D
-    {HEADUP, RIGHT, HEADDOWN, LEFT, UP, UP, RIGHT, HEADUP, DOWN, HEADDOWN, LEFT, HEADUP, DOWNLEFT, END}, // E
-    {HEADDOWN, UP, UP, RIGHT, HEADUP, DOWN, HEADDOWN, LEFT, HEADUP, DOWNLEFT, END}, // F
-    {HEADDOWN, UP, UP, RIGHT, HEADUP, DOWNLEFT, HALF, RIGHT, HEADDOWN, HALF, RIGHT, DOWN, LEFT, HEADUP, RIGHT, END}, // G
-    {HEADDOWN, UP, UP, HEADUP, RIGHT, HEADDOWN, DOWN, DOWN, HEADUP, UP, HEADDOWN, LEFT, HEADUP, DOWNLEFT, END}, // H
-    {HEADDOWN, HALF, RIGHT, UP, UP, HEADUP, HALF, LEFT, HEADDOWN, RIGHT, HEADUP, DOWN, DOWN, HEADDOWN, HALF, LEFT, HEADUP, HALF, RIGHT, END}, // I
-    {HEADDOWN, }, // J
-    {HEADUP, RIGHT, HEADDOWN, UPLEFT, UPRIGHT, HEADUP, LEFT, HEADDOWN, DOWN, DOWN, HEADUP, RIGHT, END}, // K
-    {HEADUP, UP, UP, HEADDOWN, DOWN, DOWN, RIGHT, HEADUP, END}, // L
-    {HEADDOWN, UP, UP, HALF, DOWNRIGHT, HALF, UPRIGHT, DOWN, DOWN, HEADUP, END}, // M
-    {HEADDOWN, UP, UP, DOWNRIGHT, DOWNRIGHT, UP, UP, HEADUP, DOWN, DOWN, END}, // N
-    {HEADDOWN, UP, UP, RIGHT, DOWN, DOWN, LEFT, HEADUP, RIGHT, END}, // O
-    {HEADDOWN, UP, UP, RIGHT, DOWN, LEFT, HEADUP, DOWNRIGHT, END}, // P
-    {HEADDOWN, }, // Q
-    {HEADDOWN, UP, RIGHT, UP, LEFT, DOWN, DOWNRIGHT, HEADUP, END}, // R
-    {HEADDOWN, RIGHT, UP, LEFT, UP, RIGHT, HEADUP, DOWN, DOWN, END}, // S
-    // {HEADUP, HALF, RIGHT, HEADDOWN, UP, UP, HEADUP, HALF, LEFT, HEADDOWN, RIGHT, HEADUP, DOWN, DOWN, HEADDOWN, HALF, LEFT, HEADUP, END}, // T
-    {HEADDOWN, RIGHT, UP, UP, HEADUP, LEFT, HEADDOWN, DOWN, DOWN, HEADUP, RIGHT, END}, // U
-    {HEADUP, HALF, RIGHT, HEADDOWN, HALF, UPRIGHT, HALF, UP, UP, HEADUP, LEFT, HEADDOWN, DOWN, HALF, DOWN, HALF, DOWNRIGHT, HEADUP, HALF, RIGHT, END}, // V
-    {HEADDOWN, HALF, UPRIGHT, HALF, DOWNRIGHT, UP, UP, HEADUP, LEFT, HEADDOWN, DOWN, DOWN, HEADUP, RIGHT, END}, // W
-    {HEADDOWN, }, // X
-    {HEADDOWN, }, // Y
-    {HEADDOWN, } // Z
+    {HEADDOWN, T_UP, T_RIGHT, T_DOWN, HEADUP, UP, HEADDOWN, T_LEFT, HEADUP, DOWNRIGHT, RIGHT, END}, // A
+    {HEADDOWN, T_UP, T_RIGHT, T_DOWN, T_LEFT, HEADUP, UP, HEADDOWN, T_RIGHT, HEADUP, DOWNRIGHT, RIGHT, END}, // B
+    {HEADUP, T_RIGHT, HEADDOWN, T_LEFT, T_UP, T_RIGHT, HEADUP, T_DOWN, END}, // C
+    {HEADDOWN, T_UP, RIGHT, DOWNRIGHT, DOWNLEFT, LEFT, HEADUP, T_RIGHT, END}, // D
+    {HEADDOWN, T_UP, T_RIGHT, HEADUP, DOWNLEFT, LEFT, HEADDOWN, T_RIGHT, HEADUP, DOWNLEFT, LEFT, HEADDOWN, T_RIGHT, HEADUP, END}, // E
+    {HEADDOWN, T_UP, T_RIGHT, HEADUP, DOWNLEFT, LEFT, HEADDOWN, T_RIGHT, HEADUP, DOWN, END}, // F
+    {HEADUP, T_UPRIGHT, HEADDOWN, T_LEFT, T_DOWN, T_RIGHT, UP, LEFT, HEADUP, DOWNRIGHT, END}, // G
+    {HEADDOWN, UP, T_RIGHT, UP, HEADUP, T_LEFT, HEADDOWN, DOWN, HEADUP, T_RIGHT, HEADDOWN, DOWN, HEADUP, END}, // H
+    {HEADDOWN, RIGHT, T_UP, LEFT, HEADUP, RIGHT, HEADDOWN, RIGHT, HEADUP, DOWNLEFT, DOWN, HEADDOWN, RIGHT, HEADUP, END}, // I
+    {HEADDOWN, RIGHT, T_UP, LEFT, HEADUP, RIGHT, HEADDOWN, RIGHT, HEADUP, T_DOWN, END}, // J
+    {HEADDOWN, T_UP, HEADUP, DOWN, HEADDOWN, RIGHT, UPRIGHT, HEADUP, DOWNLEFT, HEADDOWN, DOWNRIGHT, HEADUP, END}, // K
+    {HEADUP, T_UP, HEADDOWN, T_DOWN, T_RIGHT, HEADUP, END}, // L
+    {HEADDOWN, T_UP, DOWNRIGHT, UPRIGHT, T_DOWN, HEADUP, END}, // M
+    {HEADDOWN, T_UP, DOWNRIGHT, DOWNRIGHT, T_UP, HEADUP, T_DOWN, END}, // N
+    {HEADDOWN, T_RIGHT, T_UP, T_LEFT, T_DOWN, HEADUP, T_RIGHT, END}, // O
+    {HEADDOWN, T_UP, T_RIGHT, DOWN, T_LEFT, HEADUP, DOWNRIGHT, RIGHT, END}, // P
+    {HEADDOWN, T_RIGHT, T_UP, T_LEFT, T_DOWN, HEADUP, T_RIGHT, HALF, UPLEFT, HEADDOWN, DOWNRIGHT, HEADUP, HALF, UPLEFT, END}, // Q
+    {HEADDOWN, UP, T_RIGHT, UP, T_LEFT, DOWN, HEADUP, RIGHT, HEADDOWN, DOWNRIGHT, HEADUP, END}, // R
+    {HEADDOWN, T_RIGHT, UP, T_LEFT, UP, T_RIGHT, HEADUP, T_DOWN, END}, // S
+    {HEADUP, RIGHT, HEADDOWN, T_UP, LEFT, HEADUP, RIGHT, HEADDOWN, RIGHT, HEADUP, T_DOWN, END}, // T
+    {HEADDOWN, T_RIGHT, T_UP, HEADUP, T_LEFT, HEADDOWN, T_DOWN, HEADUP, T_RIGHT, END}, // U
+    {HEADUP, T_UP, HEADDOWN, DOWN, DOWNRIGHT, UPRIGHT, UP, HEADUP, T_DOWN, END}, // V
+    {HEADUP, T_UP, HEADDOWN, T_DOWN, UPRIGHT, DOWNRIGHT, T_UP, HEADUP, T_DOWN, END}, // W
+    {HEADDOWN, T_UPRIGHT, HEADUP, LEFT, HEADDOWN, T_DOWNRIGHT, HEADUP, END}, // X
+    {HEADUP, RIGHT, HEADDOWN, UP, UPLEFT, HEADUP, T_RIGHT, HEADDOWN, DOWNLEFT, HEADUP, DOWNRIGHT, END}, // Y
+    {HEADUP, T_UP, HEADDOWN, T_RIGHT, T_DOWNLEFT, T_RIGHT, HEADUP, END} // Z
 };
 instruction nextChar[6] = {HEADUP, HALF, RIGHT, END};
-instruction space[4] = {HEADUP, HALF, RIGHT, END};
+instruction space[3] = {HEADUP, RIGHT, END};
+uint8_t halfCount = 0;
 
 const instructionFunctions instructionFunctionList[INSTRUCTION_FUNCTION_COUNT] = {
     {"write", instruction_write},
@@ -66,7 +67,12 @@ void instruction_write(char* letters) {
 }
 
 void instruction_square(char* dimensions) {}
-void instruction_cube(char* dimensions) {}
+
+// instructions to draw a 3d cube
+void instruction_cube(char* dimensions) {
+    static instruction cubeInstructions[] = {HEADDOWN, T_UP, T_RIGHT, T_DOWN, T_LEFT, HEADUP, T_UP, HEADDOWN, UPRIGHT, T_RIGHT, DOWNLEFT, HEADUP, T_DOWN, HEADDOWN, UPRIGHT, T_UP, HEADUP, END};
+    instruction_executeList(cubeInstructions);
+}
 
 // this instruction takes a char* that is 0-3
 // this maps to a index into a size array and this size multiplier gets set to that value
@@ -78,7 +84,7 @@ void instruction_size(char* size) {
     sizeMult = sizeArray[index];
 }
 
-// void instruction_swag() {}
+// void instruction_s() {}
 
 // returns the instruction list for the character passed in
 instruction* instruction_getList(char c) {
@@ -89,30 +95,40 @@ instruction* instruction_getList(char c) {
 // executes a list of instructions
 // determines what motor movements are required for each movement
 void instruction_executeList(instruction* instructions) {
-    #define STEPPER_MOVE(a, b) stepper_move(x, a, y, b); break;
-    uint8_t halfCount = 0;
     for (int i = 0; instructions[i] != END; i++) {
+        instruction_executeMovement(instructions[i]);
+    }
+}
+
+movement lastMovement = UP;
+void instruction_executeMovement(movement m) {
+    if (m != lastMovement && m < T_DOWN) {
+        lastMovement = m;
         _delay_ms(BETWEEN_MOVE_DELAY);
-        switch(instructions[i]) {
-            case UP:        STEPPER_MOVE(NONE, UP);
-            case DOWN:      STEPPER_MOVE(NONE, DOWN);
-            case LEFT:      STEPPER_MOVE(LEFT, NONE);
-            case RIGHT:     STEPPER_MOVE(RIGHT, NONE);
-            case UPRIGHT:   STEPPER_MOVE(RIGHT, UP);
-            case DOWNRIGHT: STEPPER_MOVE(RIGHT, DOWN);
-            case DOWNLEFT:  STEPPER_MOVE(LEFT, DOWN);
-            case UPLEFT:    STEPPER_MOVE(LEFT, UP);
-            case HEADDOWN:  solenoid_on();  break;
-            case HEADUP:    solenoid_off(); break;
-            case HALF:      
-                sizeMult /= 2.0; 
-                halfCount++;
-                continue;
-        }
-        while (halfCount > 0) {
-            sizeMult *= 2.0;
-            halfCount--;
-        }
+    }
+    switch(m) {
+        case UP:        STEPPER_MOVE(NONE, UP);
+        case DOWN:      STEPPER_MOVE(NONE, DOWN);
+        case LEFT:      STEPPER_MOVE(LEFT, NONE);
+        case RIGHT:     STEPPER_MOVE(RIGHT, NONE);
+        case UPRIGHT:   STEPPER_MOVE(RIGHT, UP);
+        case DOWNRIGHT: STEPPER_MOVE(RIGHT, DOWN);
+        case DOWNLEFT:  STEPPER_MOVE(LEFT, DOWN);
+        case UPLEFT:    STEPPER_MOVE(LEFT, UP);
+        case HEADDOWN:  solenoid_on();  break;
+        case HEADUP:    solenoid_off(); break;
+        case HALF:      
+            sizeMult /= 2.0; 
+            halfCount++;
+            return;
+    }
+    if (m >= T_DOWN && m <= T_UPLEFT && m) {
+        instruction_executeMovement((movement)m-T_DOWN);
+        instruction_executeMovement((movement)m-T_DOWN);
+    }
+    while (halfCount > 0) {
+        sizeMult *= 2.0;
+        halfCount--;
     }
 }
 
@@ -131,3 +147,19 @@ void instruction_parseLine(char* stringInstructions) {
         }
     }
 }
+
+
+// void instruction_parse(char** instructions) {
+
+// }
+
+
+void instruction_resetX() {
+    _delay_ms(2000);
+    while (xPos > 0) {
+        instruction_executeMovement(T_LEFT);
+        xPos--;
+    }
+}
+
+void instruction_resetY() {}
