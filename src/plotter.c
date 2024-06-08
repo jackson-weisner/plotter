@@ -39,10 +39,6 @@ void teardown() {
 int main() {
     setup();
 
-    // for (int i = 0; i < 5; ++i) {
-        // instruction_executeMovement(T_UP);
-    // }
-
     instruction_parseLine("write COOLEO");
 
     teardown();

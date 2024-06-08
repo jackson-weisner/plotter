@@ -88,7 +88,7 @@ void instruction_cube(char* dimensions) {
 // this instruction takes a char* that is 0-3
 // this maps to a index into a size array and this size multiplier gets set to that value
 void instruction_size(char* size) {
-    static const int sizeArray[4] = {0.7, 1.0, 1.2, 1.6};
+    static const float sizeArray[4] = {0.7, 1.0, 1.2, 1.6};
     int index;
     sscanf(size, "%d", &index);
     if (index < 0 || index > 3) return;
