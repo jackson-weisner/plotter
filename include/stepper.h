@@ -10,7 +10,7 @@
 #define STEPPER_DEFINITIONS
 #define MOVEMENT_COUNT 12
 #define STEPPER_DELAY 10
-#define DISTANCE (8000 / (STEPPER_DELAY * 2))
+#define DISTANCE (7000 / (STEPPER_DELAY * 2))
 #define TOGGLE(s, mode) if (s ## d != NONE) stepper_ ## mode(s)
 typedef enum power {OFF, ON} power; 
 typedef struct stepper {

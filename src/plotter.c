@@ -31,6 +31,7 @@ void setup() {
 void teardown() {
     // reset the x position
     instruction_resetX();
+    instruction_resetY();
     free(x);
     free(y);
 }
@@ -38,12 +39,11 @@ void teardown() {
 int main() {
     setup();
 
-    // for (int i = 0; i < 4; ++i) {
-        // instruction_executeMovement(T_LEFT);
+    // for (int i = 0; i < 5; ++i) {
+        // instruction_executeMovement(T_UP);
     // }
 
-    // instruction_parseLine("size 0");
-    instruction_parseLine("cube");
+    instruction_parseLine("write COOLEO");
 
     teardown();
     return 0;

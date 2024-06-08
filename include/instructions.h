@@ -33,6 +33,7 @@ void instruction_write(char* letters);
 void instruction_square(char* dimensions);
 void instruction_cube(char* dimensions);
 void instruction_size(char* size);
+void instruction_resetAxis(float* axisCount, movement m);
 void instruction_resetX();
 void instruction_resetY();
 

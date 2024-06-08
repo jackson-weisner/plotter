@@ -4,7 +4,7 @@
 #define SOLENOID_DEFINITIONS
 #define SOLENOID_ON 1
 #define SOLENOID_OFF 0
-#define SOLENOID_PRE_DELAY 10000
+#define SOLENOID_PRE_DELAY 5000
 #define F_CPU 1000000UL
 typedef uint8_t solenoid_state;
 typedef struct solenoid {

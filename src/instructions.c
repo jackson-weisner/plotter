@@ -7,14 +7,15 @@
 
 extern stepper* x;
 extern stepper* y;
-uint8_t xPos = 0;
+float xPos = 0.0;
+float yPos = 0.0;
 float sizeMult = 1.0;
 
-// map of motor instructions that correspond to ASCII characters
+// map of motor instructions that correspond to characters (A-Z)
 // this is an easy way to draw characters 
 instruction charMap[CHAR_MAP_ROWS][MAX_INSTRUCTION_LEN] = {
     {HEADDOWN, T_UP, T_RIGHT, T_DOWN, HEADUP, UP, HEADDOWN, T_LEFT, HEADUP, DOWNRIGHT, RIGHT, END}, // A
-    {HEADDOWN, T_UP, T_RIGHT, T_DOWN, T_LEFT, HEADUP, UP, HEADDOWN, T_RIGHT, HEADUP, DOWNRIGHT, RIGHT, END}, // B
+    {HEADDOWN, T_UP, T_RIGHT, T_DOWN, T_LEFT, HEADUP, UP, HEADDOWN, T_RIGHT, HEADUP, DOWN, END}, // B
     {HEADUP, T_RIGHT, HEADDOWN, T_LEFT, T_UP, T_RIGHT, HEADUP, T_DOWN, END}, // C
     {HEADDOWN, T_UP, RIGHT, DOWNRIGHT, DOWNLEFT, LEFT, HEADUP, T_RIGHT, END}, // D
     {HEADDOWN, T_UP, T_RIGHT, HEADUP, DOWNLEFT, LEFT, HEADDOWN, T_RIGHT, HEADUP, DOWNLEFT, LEFT, HEADDOWN, T_RIGHT, HEADUP, END}, // E
@@ -47,23 +48,33 @@ uint8_t halfCount = 0;
 const instructionFunctions instructionFunctionList[INSTRUCTION_FUNCTION_COUNT] = {
     {"write", instruction_write},
     {"square", instruction_square},
+    {"s", instruction_s},
     {"cube", instruction_cube},
     {"size", instruction_size}
 };
 
+void instruction_nextLine() {
+    instruction_resetX();
+    instruction_executeMovement(T_DOWN);
+    instruction_executeMovement(DOWN);
+    yPos += 3;
+}
+
 // function to execute the write instruction
 // takes a string 
 void instruction_write(char* letters) {
-    letters++;
-    while(*letters != '\"') {
+    while(*letters != '\0') {
+        if (*letters == '\n') {
+            instruction_nextLine();
+            letters++;
+            continue;
+        }
         instruction_executeList(instruction_getList(*letters));
-        // if (*letters != ' ') {
-            instruction_executeList(nextChar); // shifts to the next starting location
-        // }
-        xPos++;
+        instruction_executeList(nextChar); // shifts to the next starting location
+        xPos += 2.5;
         letters++;
     }
-    xPos++;
+    // xPos += 0.5;
 }
 
 void instruction_square(char* dimensions) {}
@@ -84,7 +95,10 @@ void instruction_size(char* size) {
     sizeMult = sizeArray[index];
 }
 
-// void instruction_s() {}
+void instruction_s() {
+    static instruction sInstructions[] = {HEADDOWN, DOWN, DOWNRIGHT, UPRIGHT, UP, UPLEFT, UP, HEADUP, DOWNRIGHT, HEADDOWN, UP, UPLEFT, DOWNLEFT, DOWN, DOWNRIGHT, DOWN, HEADUP, END};
+    instruction_executeList(sInstructions);
+}
 
 // returns the instruction list for the character passed in
 instruction* instruction_getList(char c) {
@@ -100,8 +114,9 @@ void instruction_executeList(instruction* instructions) {
     }
 }
 
-movement lastMovement = UP;
+// determines what motor movements need to happen based on the input movement
 void instruction_executeMovement(movement m) {
+    static movement lastMovement = NONE;
     if (m != lastMovement && m < T_DOWN) {
         lastMovement = m;
         _delay_ms(BETWEEN_MOVE_DELAY);
@@ -148,18 +163,36 @@ void instruction_parseLine(char* stringInstructions) {
     }
 }
 
-
-// void instruction_parse(char** instructions) {
-
-// }
-
-
-void instruction_resetX() {
-    _delay_ms(2000);
-    while (xPos > 0) {
-        instruction_executeMovement(T_LEFT);
-        xPos--;
+// parses all instructions
+void instruction_parse(char** instructions) {
+    while (strcmp(*instructions, "end") != 0) {
+        instruction_parseLine(*instructions);
+        instructions++;
     }
 }
 
-void instruction_resetY() {}
+
+// this resets the axisCount and the stepper motor positions to the default
+void instruction_resetAxis(float* axisCount, movement m) {
+    _delay_ms(2000);
+    while (*axisCount > 0.5) {
+        instruction_executeMovement(m);
+        (*axisCount)--;
+    }
+
+    // determines if there
+    if (*axisCount == 0.5) {
+        instruction halfDirection[3] = {HALF, m, END};
+        instruction_executeList(halfDirection);
+    }
+    *axisCount = 0;
+}
+
+
+inline void instruction_resetX() {
+    instruction_resetAxis(&xPos, LEFT);
+}
+
+inline void instruction_resetY() {
+    instruction_resetAxis(&yPos, UP);
+}
