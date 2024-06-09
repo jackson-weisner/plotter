@@ -1,10 +1,23 @@
 # Overview
-This project controls two stepper motors on a x/y axis to create a "CNC" type plotter that can draw and write. 
+This project controls two stepper motors on a x/y axis to create a "CNC" type plotter that can draw and write. \
+\
+This project was written in C without using any Arduino libraries.
 
 # Instructions
-- write <"string to write">
+- write <string to write>
+    - writes the string 
+- size <0-3>
+    - sets the size for the rest of the instructions
+- s
+    - draws a cool s
+- square
+    - draws a square
+- cube
+    - draws a cube
+
 
 # Hardware Overview
 - Two NEMA 23 stepper motors with 400mm ball screws
 - Two TB6600 stepper motor drivers
-- ATMega328p microcontroller 
+- 5v 3.6A push pull solenoid
+- ATMega328p micro controller 

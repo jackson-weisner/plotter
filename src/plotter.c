@@ -2,7 +2,6 @@
 #include "../include/stepper.h"
 #include "../include/instructions.h"
 #include "../include/solenoid.h"
-#include "../include/servo.h"
 #include "../include/button.h"
 #include <util/delay.h>
 #include <stdlib.h>
@@ -23,13 +22,11 @@ void setup() {
     button* waitButton = button_init(&DDRB, &PINB, PINB5);
     button_wait(waitButton);
     free(waitButton);
-
-    // move to starting location
 }
 
 // frees memory
 void teardown() {
-    // reset the x position
+    // reset the x and y position
     instruction_resetX();
     instruction_resetY();
     free(x);
@@ -39,7 +36,17 @@ void teardown() {
 int main() {
     setup();
 
-    instruction_parseLine("write COOLEO");
+    char* instructions[] = {
+        
+
+
+        "write HELLO\nWORLD",
+        "end"
+
+
+
+    };
+    instruction_parse(instructions);
 
     teardown();
     return 0;

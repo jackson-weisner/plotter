@@ -53,6 +53,7 @@ const instructionFunctions instructionFunctionList[INSTRUCTION_FUNCTION_COUNT] =
     {"size", instruction_size}
 };
 
+// moves the y axis stepper motor down one line
 void instruction_nextLine() {
     instruction_resetX();
     instruction_executeMovement(T_DOWN);
@@ -77,12 +78,17 @@ void instruction_write(char* letters) {
     // xPos += 0.5;
 }
 
-void instruction_square(char* dimensions) {}
+// draws a square
+void instruction_square(char* params) {
+    static instruction squareInstruction[] = {HEADDOWN, T_UP, T_RIGHT, T_DOWN, T_LEFT, HEADUP, T_RIGHT, END};
+    instruction_executeList(squareInstruction);
+}
 
 // instructions to draw a 3d cube
-void instruction_cube(char* dimensions) {
-    static instruction cubeInstructions[] = {HEADDOWN, T_UP, T_RIGHT, T_DOWN, T_LEFT, HEADUP, T_UP, HEADDOWN, UPRIGHT, T_RIGHT, DOWNLEFT, HEADUP, T_DOWN, HEADDOWN, UPRIGHT, T_UP, HEADUP, END};
+void instruction_cube(char* params) {
+    static instruction cubeInstructions[] = {HEADDOWN, T_UP, T_RIGHT, T_DOWN, T_LEFT, HEADUP, T_UP, HEADDOWN, UPRIGHT, T_RIGHT, DOWNLEFT, HEADUP, T_DOWN, HEADDOWN, UPRIGHT, T_UP, HEADUP, T_DOWN, DOWN, END};
     instruction_executeList(cubeInstructions);
+    xPos += 3;
 }
 
 // this instruction takes a char* that is 0-3
@@ -95,9 +101,10 @@ void instruction_size(char* size) {
     sizeMult = sizeArray[index];
 }
 
-void instruction_s() {
+void instruction_s(char* params) {
     static instruction sInstructions[] = {HEADDOWN, DOWN, DOWNRIGHT, UPRIGHT, UP, UPLEFT, UP, HEADUP, DOWNRIGHT, HEADDOWN, UP, UPLEFT, DOWNLEFT, DOWN, DOWNRIGHT, DOWN, HEADUP, END};
     instruction_executeList(sInstructions);
+    xPos += 2;
 }
 
 // returns the instruction list for the character passed in

@@ -7,7 +7,7 @@
 #define CHAR_MAP_ROWS 28
 #define MAX_INSTRUCTION_LEN 23
 #define CUBE_INSTRUCTION_COUNT 18
-#define INSTRUCTION_FUNCTION_COUNT 4
+#define INSTRUCTION_FUNCTION_COUNT 5
 #define EQUAL_STR(x, y) (strcmp(x, y) == 0)
 #define SIZE_ARRAY_SIZE 4
 #define STEPPER_MOVE(a, b) stepper_move(x, a, y, b); break;
@@ -30,13 +30,16 @@ typedef struct instructionFunctions {
 
 instruction* instruction_getList(char c);
 void instruction_write(char* letters);
-void instruction_square(char* dimensions);
-void instruction_cube(char* dimensions);
+void instruction_square(char* params);
+void instruction_cube(char* params);
 void instruction_size(char* size);
+void instruction_s(char* params);
 void instruction_resetAxis(float* axisCount, movement m);
 void instruction_resetX();
 void instruction_resetY();
+void instruction_nextLine();
 
 void instruction_executeList(instruction* instructions);
 void instruction_executeMovement(movement m);
 void instruction_parseLine(char* stringInstructions);
+void instruction_parse(char** instructions);
