@@ -4,7 +4,7 @@ This project controls two stepper motors on a x/y axis to create a "CNC" type pl
 This project was written in C without using any Arduino libraries.
 
 # Instructions
-- write <string to write>
+- write `STRING TO WRITE`
     - writes the string 
 - size <0-3>
     - sets the size for the rest of the instructions
