@@ -21,3 +21,7 @@ This project was written in C without using any Arduino libraries.
 - Two TB6600 stepper motor drivers
 - 5v 3.6A push pull solenoid
 - ATMega328p micro controller 
+
+# Compiling and Uploading
+- compile with `avr-gcc`
+- upload to the ATMega328p with `avrdude`
