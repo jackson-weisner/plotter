@@ -22,6 +22,11 @@ void setup() {
     button* waitButton = button_init(&DDRB, &PINB, PINB5);
     button_wait(waitButton);
     free(waitButton);
+
+    instruction_executeMovement(HEADDOWN);
+    _delay_ms(10000);
+    instruction_executeMovement(HEADUP);
+    _delay_ms(10000);
 }
 
 // frees memory
@@ -36,15 +41,11 @@ void teardown() {
 int main() {
     setup();
 
+    instruction_executeMovement(LEFT);
+
     char* instructions[] = {
-        
-
-
-        "write HELLO\nWORLD",
+        "write CHUCK\nWEISNER",
         "end"
-
-
-
     };
     instruction_parse(instructions);
 

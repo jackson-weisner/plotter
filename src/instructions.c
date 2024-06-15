@@ -42,7 +42,7 @@ instruction charMap[CHAR_MAP_ROWS][MAX_INSTRUCTION_LEN] = {
     {HEADUP, T_UP, HEADDOWN, T_RIGHT, T_DOWNLEFT, T_RIGHT, HEADUP, END} // Z
 };
 instruction nextChar[6] = {HEADUP, HALF, RIGHT, END};
-instruction space[3] = {HEADUP, RIGHT, END};
+instruction space[5] = {HEADUP, RIGHT, END};
 uint8_t halfCount = 0;
 
 const instructionFunctions instructionFunctionList[INSTRUCTION_FUNCTION_COUNT] = {
