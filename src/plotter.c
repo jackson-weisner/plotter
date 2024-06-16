@@ -44,7 +44,7 @@ int main() {
     instruction_executeMovement(LEFT);
 
     char* instructions[] = {
-        "write CHUCK\nWEISNER",
+        "write JACKSON\nWEISNER",
         "end"
     };
     instruction_parse(instructions);
